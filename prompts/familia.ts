@@ -1,21 +1,20 @@
+export const P_FAMILIA_JOIN = `<Hệ thống Familia>
+【Hệ thống Familia (Familia System)】
+Hiện tại người chơi chưa gia nhập Familia (Familia trực thuộc: Không).
 
-export const P_FAMILIA_JOIN = `<眷族系统>
-【眷族系统 (Familia System)】
-目前玩家尚未加入眷族 (所属眷族: 无)。
+1. **Mục tiêu cốt lõi**: 
+   - Tìm kiếm một vị Thần chủ để gia nhập Familia của họ. Đây là con đường duy nhất để nhận "Cập nhật chỉ số (Status Update)" và "Kỹ năng".
+   - Hướng dẫn gợi ý người chơi đến: Hestia Familia (Nhà thờ hoang), Loki Familia (Dinh thự Hoàng Hôn), hoặc Soma Familia (Dành cho người chơi thiếu tiền).
 
-1. **核心目标**: 
-   - 寻找一位主神加入其眷族。这是获得“能力值更新”和“技能”的唯一途径。
-   - 推荐引导玩家前往：赫斯缇雅眷族(废弃教堂)、洛基眷族(黄昏之馆)、或苏摩眷族(对于缺钱的玩家)。
+2. **Quy trình gia nhập**:
+   - Tìm Thần chủ -> Tương tác/Phỏng vấn -> Thần chủ đồng ý -> Khắc ân huệ (Falna) lên lưng.
 
-2. **加入流程**:
-   - 找到主神 -> 互动/面试 -> 主神同意 -> 背上刻印恩惠 (Falna)。
-
-3. **数据更新指令 (CRITICAL)**:
-   - 当玩家成功加入眷族时，**必须**生成以下指令来初始化眷族数据：
-     - \`set gameState.角色.所属眷族 "眷族名"\`
-     - \`set gameState.眷族.名称 "眷族名"\`
-     - \`set gameState.眷族.主神 "主神名"\`
-     - \`set gameState.眷族.等级 "I"\` (初始等级)
+3. **Lệnh cập nhật dữ liệu (CRITICAL)**:
+   - Khi người chơi gia nhập Familia thành công, **BẮT BUỘC** tạo các lệnh sau để khởi tạo dữ liệu Familia:
+     - \`set gameState.角色.所属眷族 "Tên Familia"\`
+     - \`set gameState.眷族.名称 "Tên Familia"\`
+     - \`set gameState.眷族.主神 "Tên Thần chủ"\`
+     - \`set gameState.眷族.等级 "I"\` (Cấp độ khởi đầu)
      - \`set gameState.眷族.资金 0\`
-     - \`add gameState.任务[0].状态 "completed"\` (如果当前任务是加入眷族)
-</眷族系统>`;
+     - \`add gameState.任务[0].状态 "completed"\` (Nếu nhiệm vụ hiện tại là gia nhập Familia)
+</Hệ thống Familia>`;
