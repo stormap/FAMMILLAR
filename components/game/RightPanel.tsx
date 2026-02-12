@@ -1,0 +1,241 @@
+﻿import React from 'react';
+import { Briefcase, Users, ClipboardList, Zap, Settings, Globe, Shield, BookOpen, Scroll, Flag, Gem, Brain, Radar, Swords, HardDrive, Scale, Database } from 'lucide-react';
+import { MenuButton } from './right/MenuButton';
+
+interface RightPanelProps {
+    onOpenSettings: () => void;
+    onOpenInventory: () => void;
+    onOpenEquipment: () => void;
+    onOpenSocial: () => void;
+    onOpenTasks: () => void;
+    onOpenSkills: () => void;
+    onOpenWorld: () => void;
+    onOpenFamilia: () => void;
+    onOpenStory: () => void;
+    onOpenContract: () => void;
+    onOpenLoot: () => void;
+    onOpenSaveManager: () => void;
+    onOpenMemory: () => void;
+    onOpenLibrary: () => void;
+    onOpenParty?: () => void;
+    isHellMode?: boolean;
+    isNpcBacklineUpdating?: boolean;
+    summary?: {
+        activeTasks: number;
+        partySize: number;
+        presentCount: number;
+        inventoryWeight?: number;
+        maxCarry?: number;
+        lootCount?: number;
+    };
+}
+
+export const RightPanel: React.FC<RightPanelProps> = ({ 
+    onOpenSettings, 
+    onOpenInventory,
+    onOpenEquipment,
+    onOpenSocial,
+    onOpenTasks,
+    onOpenSkills,
+    onOpenWorld,
+    onOpenFamilia,
+    onOpenStory,
+    onOpenContract,
+    onOpenLoot,
+    onOpenSaveManager,
+    onOpenMemory,
+    onOpenLibrary,
+    onOpenParty,
+    isHellMode,
+    isNpcBacklineUpdating,
+    summary
+}) => {
+  // Theme Overrides
+  const bgTexture = isHellMode ? 'bg-red-900/10' : 'bg-halftone-blue opacity-10';
+  const primaryHover = isHellMode ? 'group-hover:bg-red-600' : 'group-hover:bg-blue-600';
+  const secondaryHover = isHellMode ? 'group-hover:bg-orange-600' : 'group-hover:bg-orange-600'; // Keep orange or change
+  const settingsBorder = isHellMode ? 'group-hover:border-red-600' : 'group-hover:border-blue-600';
+  const worldUpdating = isNpcBacklineUpdating === true;
+  const worldColorClass = worldUpdating ? 'bg-cyan-800' : 'bg-zinc-800';
+  const worldIndicator = worldUpdating
+      ? <span className="block w-2.5 h-2.5 rounded-full bg-cyan-300 animate-pulse shadow-[0_0_6px_rgba(34,211,238,0.8)]" />
+      : null;
+
+  return (
+    <div className="w-full lg:w-[20%] h-full bg-zinc-900/90 backdrop-blur-sm flex flex-col p-3 gap-2 overflow-hidden relative border-l-4 border-black">
+        {/* Background Decor */}
+        <div className={`absolute top-0 right-0 w-full h-full ${bgTexture} pointer-events-none`} />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent pointer-events-none" />
+
+        {summary && (
+            <div className="relative z-10 bg-black/80 border border-zinc-700 p-3 mt-2 shadow-lg">
+                <div className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2">TỔNG QUAN CHIẾN THUẬT</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-zinc-300">
+                        <ClipboardList size={12} className="text-amber-400" />
+                        <span>Nhiệm Vụ</span>
+                        <span className="ml-auto text-white">{summary.activeTasks}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-zinc-300">
+                        <Users size={12} className="text-indigo-400" />
+                        <span>Đội Ngũ</span>
+                        <span className="ml-auto text-white">{summary.partySize}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-zinc-300">
+                        <Radar size={12} className="text-emerald-400" />
+                        <span>Hiện Diện</span>
+                        <span className="ml-auto text-white">{summary.presentCount}</span>
+                    </div>
+                    {typeof summary.inventoryWeight === 'number' && (
+                        <div className="flex items-center gap-2 text-zinc-300 col-span-2">
+                            <Scale size={12} className="text-orange-400" />
+                            <span>Tải Trọng</span>
+                            <span className={`ml-auto ${summary.maxCarry !== undefined && summary.inventoryWeight > summary.maxCarry ? 'text-red-400' : 'text-white'}`}>
+                                {summary.inventoryWeight} / {summary.maxCarry ?? '--'} kg
+                            </span>
+                        </div>
+                    )}
+                    {typeof summary.lootCount === 'number' && (
+                        <div className="flex items-center gap-2 text-zinc-300 col-span-2">
+                            <Gem size={12} className="text-yellow-400" />
+                            <span>Chiến Lợi Phẩm</span>
+                            <span className="ml-auto text-white">{summary.lootCount}</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )}
+
+        {/* Scrollable Area for Buttons */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mt-4 pb-4 space-y-2">
+            <MenuButton 
+                label="Túi Đồ" 
+                icon={<Briefcase className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={50} 
+                colorClass="bg-zinc-800"
+                hoverColorClass={`${primaryHover} group-hover:border-white`}
+                onClick={onOpenInventory}
+            />
+            <MenuButton 
+                label="Kho Chiến Lợi Phẩm"
+                icon={<Gem className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={75} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-yellow-500 group-hover:border-white"
+                onClick={onOpenLoot}
+            />
+            <MenuButton 
+                label="Trang Bị" 
+                icon={<Shield className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={100} 
+                colorClass="bg-zinc-800"
+                hoverColorClass={`${secondaryHover} group-hover:border-white`}
+                onClick={onOpenEquipment}
+            />
+            <MenuButton 
+                label="Kỹ Năng / Phép"
+                icon={<Zap className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={150} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-yellow-500 group-hover:border-white"
+                onClick={onOpenSkills}
+            />
+            <MenuButton 
+                label="Đội Ngũ" 
+                icon={<Swords className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={160} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-indigo-600 group-hover:border-white"
+                onClick={onOpenParty || (() => {})}
+            />
+            <div className="border-t border-zinc-700 my-2" />
+            <MenuButton 
+                label="Thư Viện"
+                icon={<Database className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={210} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-emerald-600 group-hover:border-white"
+                onClick={onOpenLibrary}
+            />
+            <MenuButton 
+                label="Ký Ức" 
+                icon={<Brain className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={225} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-emerald-600 group-hover:border-white"
+                onClick={onOpenMemory}
+            />
+            <MenuButton 
+                label="Thế Giới" 
+                icon={<Globe className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={300} 
+                colorClass={worldColorClass}
+                hoverColorClass="group-hover:bg-cyan-600 group-hover:border-white"
+                onClick={onOpenWorld}
+                indicator={worldIndicator}
+            />
+            <div className="border-t border-zinc-700 my-2" />
+            <MenuButton 
+                label="Xã Hội" 
+                icon={<Users className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={350} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-pink-500 group-hover:border-white"
+                onClick={onOpenSocial}
+            />
+             <MenuButton 
+                label="Quyến Tộc" 
+                icon={<Flag className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={400} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-blue-800 group-hover:border-white"
+                onClick={onOpenFamilia}
+            />
+            <MenuButton 
+                label="Nhiệm Vụ" 
+                icon={<ClipboardList className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={450} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-amber-500 group-hover:border-white"
+                onClick={onOpenTasks}
+            />
+            <MenuButton 
+                label="Lưu Trữ" 
+                icon={<HardDrive className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={470} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-slate-600 group-hover:border-white"
+                onClick={onOpenSaveManager}
+            />
+             <div className="border-t border-zinc-700 my-2" />
+             <MenuButton 
+                label="Cốt Truyện" 
+                icon={<BookOpen className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={500} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-green-600 group-hover:border-white"
+                onClick={onOpenStory}
+            />
+             <MenuButton 
+                label="Khế Ước" 
+                icon={<Scroll className="w-5 h-5 lg:w-5 lg:h-5" />} 
+                delay={550} 
+                colorClass="bg-zinc-800"
+                hoverColorClass="group-hover:bg-amber-700 group-hover:border-white"
+                onClick={onOpenContract}
+            />
+        </div>
+        
+        <div className="mt-auto shrink-0 pt-2 border-t border-zinc-700">
+            <MenuButton 
+                label="Cài Đặt" 
+                icon={<Settings className="w-5 h-5 lg:w-5 lg:h-5 animate-spin-slow" />} 
+                delay={600} 
+                colorClass="bg-black"
+                hoverColorClass={`group-hover:bg-white ${settingsBorder}`}
+                onClick={onOpenSettings}
+            />
+        </div>
+    </div>
+  );
+};
