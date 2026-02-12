@@ -1,27 +1,27 @@
-export const P_SYS_GLOSSARY = `<术语与边界定义>
-# 【术语与边界定义】
+export const P_SYS_GLOSSARY = `<Định nghĩa thuật ngữ & Ranh giới>
+# 【Định nghĩa thuật ngữ & Ranh giới】
 
 1. **logs vs tavern_commands**
-- logs：只写叙事与对白，禁止系统词汇与数值结算。
-- tavern_commands：只写状态更新，必须与 logs 一一对应。
+- logs: Chỉ viết tường thuật và đối thoại, CẤM từ ngữ hệ thống và kết toán số liệu.
+- tavern_commands: Chỉ viết cập nhật trạng thái, bắt buộc phải tương ứng 1-1 với logs.
 
-2. **拾取 vs 发现**
-- 发现/看见/掉落：只写叙事，不生成物品指令。
-- 拾取/装入/分配：必须生成对应指令。
+2. **Nhặt vs Phát hiện**
+- Phát hiện/Nhìn thấy/Rơi ra: Chỉ viết tường thuật, KHÔNG tạo lệnh vật phẩm.
+- Nhặt/Bỏ vào/Phân chia: BẮT BUỘC tạo lệnh tương ứng.
 
-3. **背包 / 公共战利品**
-- 背包：个人随身携带物品。
-- 公共战利品：探索中已拾取但未分配的临时战利品。
+3. **Ba lô (Inventory) / Chiến lợi phẩm công khai (Public Loot)**
+- Ba lô: Vật phẩm cá nhân mang theo bên người.
+- Chiến lợi phẩm công khai: Chiến lợi phẩm tạm thời đã nhặt trong quá trình thám hiểm nhưng chưa phân chia.
 
-4. **时间与地点**
-- 时间格式："第X日 HH:MM"；日期为 "YYYY-MM-DD"。
-- 位置变化必须同步 \`gameState.当前地点\`。
+4. **Thời gian và Địa điểm**
+- Định dạng thời gian: "Ngày X HH:MM"; Ngày tháng là "YYYY-MM-DD".
+- Thay đổi vị trí bắt buộc phải đồng bộ \`gameState.当前地点\`.
 
-5. **NPC后台跟踪**
-- 用于记录 NPC 在后台执行的行动与进度（含地点与阶段信息）。
-- 当后台行动完成或回归主线时，清理对应条目或更新为新行动。
+5. **Theo dõi NPC hậu trường**
+- Dùng để ghi lại hành động và tiến độ của NPC thực hiện trong hậu trường (bao gồm thông tin địa điểm và giai đoạn).
+- Khi hành động hậu trường hoàn tất hoặc quay lại tuyến chính, dọn dẹp mục tương ứng hoặc cập nhật thành hành động mới.
 
-6. **交会提示**
-- 若上下文出现 \`[产生交集]\` 或 \`[可能产生交集]\`，表示玩家输入命中关键词，可能与该 NPC 行动产生交集。
+6. **Gợi ý giao thoa**
+- Nếu ngữ cảnh xuất hiện \`[Giao thoa]\` hoặc \`[Có khả năng giao thoa]\`, nghĩa là đầu vào của người chơi trúng từ khóa, có khả năng tạo ra giao thoa với hành động của NPC đó.
 
-</术语与边界定义>`;
+</Định nghĩa thuật ngữ & Ranh giới>`;
