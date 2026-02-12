@@ -1,397 +1,397 @@
-export const P_JUDGMENT_EASY = `<判定系统-轻松>
-【判定系统：轻松 (Easy)】
-此模式为宽松判定，允许小幅“侥幸”，但不得违背因果与等级差距。
+export const P_JUDGMENT_EASY = `<Hệ thống phán quyết-Dễ>
+【Hệ thống phán quyết: Dễ (Easy)】
+Chế độ này là phán quyết nới lỏng, cho phép một chút "may mắn", nhưng không được vi phạm nhân quả và chênh lệch cấp độ.
 
-## 判定输出要求
-**必须使用结构化 logs 对象输出判定**，格式如下：
+## Yêu cầu đầu ra phán quyết
+**Bắt buộc sử dụng đối tượng logs có cấu trúc để xuất phán quyết**, định dạng như sau:
 \`\`\`json
 {
-  "sender": "【判定】",
-  "text": "行动名称｜结果｜判定值 158/难度 120｜基础 130 (Lv.补正)｜环境 +18 (地形/视野)｜状态 -0 (体能/伤势)｜幸运 +10"
+  "sender": "【Phán quyết】",
+  "text": "Tên hành động｜Kết quả｜Giá trị check 158/Độ khó 120｜Cơ bản 130 (Lv.Bonus)｜Môi trường +18 (Địa hình/Tầm nhìn)｜Trạng thái -0 (Thể năng/Thương tích)｜May mắn +10"
 }
 \`\`\`
-- 字段顺序固定：行动名称 → 结果 → 判定值/难度 → 基础 → 环境 → 状态 → 幸运（有装备修正时可在末尾追加“｜装备 +Q (说明)”）。
-- 结果仅允许：成功 / 失败 / 大成功 / 大失败。
-- NSFW 场景下仍必须执行内部判定，但默认不在 logs 输出常规“【判定】”行。
-- 仅当出现不可抵御/强制失控/榨干/魅惑沦陷等高风险结果时，允许输出 '"sender":"【NSFW判定】"' 的专用判定行，用于前端弹窗展示。
+- Thứ tự trường cố định: Tên hành động → Kết quả → Giá trị check/Độ khó → Cơ bản → Môi trường → Trạng thái → May mắn (Có thể thêm "｜Trang bị +Q (Giải thích)" vào cuối nếu có sửa đổi từ trang bị).
+- Kết quả chỉ cho phép: Thành công / Thất bại / Đại thành công / Đại thất bại.
+- Trong bối cảnh NSFW vẫn bắt buộc thực hiện phán quyết nội bộ, nhưng mặc định không xuất dòng "【Phán quyết】" thông thường vào logs.
+- Chỉ khi xuất hiện kết quả rủi ro cao như không thể chống cự/cưỡng chế mất kiểm soát/vắt kiệt/mê hoặc sa ngã, mới cho phép xuất dòng phán quyết chuyên dụng '"sender":"【Phán quyết NSFW】"' để hiển thị popup frontend.
 
 ---
 
-## 1. 核心公式 (Formula)
+## 1. Công thức cốt lõi (Formula)
 \`\`\`
-最终判定值 = (基础能力 + 等级隐形补正) + 幸运 + 环境修正 + 状态修正 + 装备修正
+Giá trị phán quyết cuối = (Năng lực cơ bản + Ẩn số cấp độ) + May mắn + Sửa đổi môi trường + Sửa đổi trạng thái + Sửa đổi trang bị
 \`\`\`
 
-### A. 基础值 (Base)
-基础 = 核心属性值(0-999) + (等级 Level × 100)
-**等级补正 (Level Bonus)**:
+### A. Giá trị cơ bản (Base)
+Cơ bản = Chỉ số thuộc tính cốt lõi(0-999) + (Cấp độ Level × 100)
+**Thưởng cấp độ (Level Bonus)**:
 - Lv.1: +0
 - Lv.2: +300
 - Lv.3: +600
 - Lv.4: +1000
 
-**属性对照**:
-- 近战攻击: 力量(Str) + 灵巧(Dex)/2
-- 远程/技巧: 灵巧(Dex) + 运气
-- 防御/耐力: 耐久(End) + 意志
-- 闪避/逃跑: 敏捷(Agi)
-- 魔法攻击: 魔力(Mag) + 精神(MP总量相关)
+**Đối chiếu thuộc tính**:
+- Tấn công cận chiến: Sức mạnh(Str) + Khéo léo(Dex)/2
+- Tầm xa/Kỹ thuật: Khéo léo(Dex) + May mắn
+- Phòng thủ/Sức bền: Độ bền(End) + Ý chí
+- Né tránh/Chạy trốn: Nhanh nhẹn(Agi)
+- Tấn công phép thuật: Ma lực(Mag) + Tinh thần(Liên quan tổng MP)
 
-### B. 难度阈值 (Difficulty)
-- 同级战斗:
-  - 简单(杂兵): 判定值需 > 属性平均值 - 100
-  - 普通(精英): 判定值需 > 属性平均值
-  - 困难(楼层主): 判定值需 > 属性平均值 + 200
-- 跨级挑战:
-  - 高1级: 同级阈值基础上 +400
-  - 高2级: 同级阈值基础上 +800
+### B. Ngưỡng độ khó (Difficulty)
+- Chiến đấu đồng cấp:
+  - Đơn giản (Lính lác): Giá trị check cần > Trung bình thuộc tính - 100
+  - Bình thường (Tinh anh): Giá trị check cần > Trung bình thuộc tính
+  - Khó (Chủ tầng): Giá trị check cần > Trung bình thuộc tính + 200
+- Thử thách vượt cấp:
+  - Cao hơn 1 cấp: Ngưỡng đồng cấp +400
+  - Cao hơn 2 cấp: Ngưỡng đồng cấp +800
 
-### C. 非战斗行动 DC 指南 (示例)
-- 简单: 80~120（普通交涉/简单攀爬）
-- 中等: 120~170（复杂交涉/危险攀爬）
-- 困难: 170~230（快速锁匠/高速闪避）
-- 极难: 230+（短时间内高精度操作）
+### C. Hướng dẫn DC hành động phi chiến đấu (Ví dụ)
+- Đơn giản: 80~120 (Giao thiệp thường/Leo trèo đơn giản)
+- Trung bình: 120~170 (Giao thiệp phức tạp/Leo trèo nguy hiểm)
+- Khó: 170~230 (Phá khóa nhanh/Né tránh tốc độ cao)
+- Cực khó: 230+ (Thao tác chính xác cao trong thời gian ngắn)
 
-### D. 修正值 (Modifiers)
-- **环境**:
-  - 主场/熟悉地形: +30
-  - 黑暗/狭窄/恶劣: -30 ~ -50
-  - 队友支援: +20 ~ +50
-- **装备**:
-  - 装备压制/克制: +10 ~ +40
-  - 装备破损/耐久不足: -10 ~ -30
-- **状态**:
-  - 受伤 (HP < 50%): -20
-  - 濒死 (HP < 20%): -50
-  - 体力不足 (体力 < 30%): -15
-  - 高疲劳 (疲劳度 > 70%): -15
-  - 饥饿/干渴: -10 ~ -20
-  - 体力与疲劳惩罚不叠加，取更高者
+### D. Giá trị sửa đổi (Modifiers)
+- **Môi trường**:
+  - Sân nhà/Địa hình quen thuộc: +30
+  - Tối tăm/Chật hẹp/Khắc nghiệt: -30 ~ -50
+  - Đồng đội hỗ trợ: +20 ~ +50
+- **Trang bị**:
+  - Trang bị áp chế/Khắc chế: +10 ~ +40
+  - Trang bị hỏng/Độ bền không đủ: -10 ~ -30
+- **Trạng thái**:
+  - Bị thương (HP < 50%): -20
+  - Hấp hối (HP < 20%): -50
+  - Thể lực không đủ (Thể lực < 30%): -15
+  - Mệt mỏi cao (Độ mệt mỏi > 70%): -15
+  - Đói/Khát: -10 ~ -20
+  - Hình phạt thể lực và mệt mỏi không cộng dồn, lấy cái cao hơn
 
 ---
 
-## 2. 结果判定表 (Result Table)
-| 差值 (判定值 - 难度) | 结果 | 后果 |
+## 2. Bảng phán quyết kết quả (Result Table)
+| Chênh lệch (Giá trị check - Độ khó) | Kết quả | Hậu quả |
 |-------------------|------|------|
-| < -200            | 大失败 | 轻度重创 / 资源损耗 |
-| < 0               | 失败 | 受轻伤 / 被迫撤退 |
-| ≥ 0               | 成功 | 造成有效伤害 |
-| ≥ 150             | 大成功 | 暴击 / 部位破坏 |
-| ≥ 300             | 完美 | 秒杀 / 英雄一击 |
+| < -200            | Đại thất bại | Trọng thương nhẹ / Tổn thất tài nguyên |
+| < 0               | Thất bại | Bị thương nhẹ / Buộc phải rút lui |
+| ≥ 0               | Thành công | Gây sát thương hiệu quả |
+| ≥ 150             | Đại thành công | Chí mạng / Phá hủy bộ phận |
+| ≥ 300             | Hoàn hảo | Một kích tất sát / Đòn đánh anh hùng |
 
 ---
 
-## 3. 流程与规则
-1. 确定行动类型与核心属性。
-2. 计算基础值与等级补正。
-3. 按敌方强度或 DC 选择难度阈值。
-4. 叠加环境/装备/状态修正。
-5. 给出判定结果并写入判定行。
+## 3. Quy trình và Quy tắc
+1. Xác định loại hành động và thuộc tính cốt lõi.
+2. Tính giá trị cơ bản và thưởng cấp độ.
+3. Chọn ngưỡng độ khó theo cường độ địch hoặc DC.
+4. Cộng dồn sửa đổi môi trường/trang bị/trạng thái.
+5. Đưa ra kết quả phán quyết và ghi vào dòng phán quyết.
 
-## 4. 场景示例
-- 例1（交涉）: 基础 120 + 环境 +10 + 状态 -0 → 判定 130，对比 DC 110，成功。
-- 例2（战斗）: 基础 160 + 装备 +20 + 环境 -10 → 判定 170，对比精英阈值 150，成功。
+## 4. Ví dụ bối cảnh
+- Ví dụ 1 (Giao thiệp): Cơ bản 120 + Môi trường +10 + Trạng thái -0 → Check 130, so với DC 110, Thành công.
+- Ví dụ 2 (Chiến đấu): Cơ bản 160 + Trang bị +20 + Môi trường -10 → Check 170, so với ngưỡng Tinh anh 150, Thành công.
 
-## 5. 轻松规则（强制）
-- 差值 ≥ -30 可视为“勉强成功”。
-- 失败后果允许弱化，但必须真实。
-- 不允许无理由跨级碾压。
-</判定系统-轻松>`;
+## 5. Quy tắc Dễ (Bắt buộc)
+- Chênh lệch ≥ -30 có thể coi là "Miễn cưỡng thành công".
+- Hậu quả thất bại cho phép làm nhẹ, nhưng phải thực tế.
+- Không cho phép vượt cấp áp đảo vô lý.
+</Hệ thống phán quyết-Dễ>`;
 
-export const P_JUDGMENT_NORMAL = `<判定系统-普通>
-【判定系统：普通 (Normal)】
-此模式为标准判定，结果与代价严格对应。
+export const P_JUDGMENT_NORMAL = `<Hệ thống phán quyết-Bình thường>
+【Hệ thống phán quyết: Bình thường (Normal)】
+Chế độ này là phán quyết tiêu chuẩn, kết quả và cái giá tương ứng nghiêm ngặt.
 
-## 判定输出要求
-**必须使用结构化 logs 对象输出判定**，格式如下：
+## Yêu cầu đầu ra phán quyết
+**Bắt buộc sử dụng đối tượng logs có cấu trúc để xuất phán quyết**, định dạng như sau:
 \`\`\`json
 {
-  "sender": "【判定】",
-  "text": "行动名称｜结果｜判定值 158/难度 120｜基础 130 (Lv.补正)｜环境 +18 (地形/视野)｜状态 -0 (体能/伤势)｜幸运 +10"
+  "sender": "【Phán quyết】",
+  "text": "Tên hành động｜Kết quả｜Giá trị check 158/Độ khó 120｜Cơ bản 130 (Lv.Bonus)｜Môi trường +18 (Địa hình/Tầm nhìn)｜Trạng thái -0 (Thể năng/Thương tích)｜May mắn +10"
 }
 \`\`\`
-- 字段顺序固定：行动名称 → 结果 → 判定值/难度 → 基础 → 环境 → 状态 → 幸运（有装备修正时可在末尾追加“｜装备 +Q (说明)”）。
-- 结果仅允许：成功 / 失败 / 大成功 / 大失败。
-- NSFW 场景下仍必须执行内部判定，但默认不在 logs 输出常规“【判定】”行。
-- 仅当出现不可抵御/强制失控/榨干/魅惑沦陷等高风险结果时，允许输出 '"sender":"【NSFW判定】"' 的专用判定行，用于前端弹窗展示。
+- Thứ tự trường cố định: Tên hành động → Kết quả → Giá trị check/Độ khó → Cơ bản → Môi trường → Trạng thái → May mắn (Có thể thêm "｜Trang bị +Q (Giải thích)" vào cuối nếu có sửa đổi từ trang bị).
+- Kết quả chỉ cho phép: Thành công / Thất bại / Đại thành công / Đại thất bại.
+- Trong bối cảnh NSFW vẫn bắt buộc thực hiện phán quyết nội bộ, nhưng mặc định không xuất dòng "【Phán quyết】" thông thường vào logs.
+- Chỉ khi xuất hiện kết quả rủi ro cao như không thể chống cự/cưỡng chế mất kiểm soát/vắt kiệt/mê hoặc sa ngã, mới cho phép xuất dòng phán quyết chuyên dụng '"sender":"【Phán quyết NSFW】"' để hiển thị popup frontend.
 
 ---
 
-## 1. 核心公式 (Formula)
+## 1. Công thức cốt lõi (Formula)
 \`\`\`
-最终判定值 = (基础能力 + 等级隐形补正) + 幸运 + 环境修正 + 状态修正 + 装备修正
+Giá trị phán quyết cuối = (Năng lực cơ bản + Ẩn số cấp độ) + May mắn + Sửa đổi môi trường + Sửa đổi trạng thái + Sửa đổi trang bị
 \`\`\`
 
-### A. 基础值 (Base)
-基础 = 核心属性值(0-999) + (等级 Level × 100)
-**等级补正 (Level Bonus)**:
+### A. Giá trị cơ bản (Base)
+Cơ bản = Chỉ số thuộc tính cốt lõi(0-999) + (Cấp độ Level × 100)
+**Thưởng cấp độ (Level Bonus)**:
 - Lv.1: +0
 - Lv.2: +300
 - Lv.3: +600
 - Lv.4: +1000
 
-**属性对照**:
-- 近战攻击: 力量(Str) + 灵巧(Dex)/2
-- 远程/技巧: 灵巧(Dex) + 运气
-- 防御/耐力: 耐久(End) + 意志
-- 闪避/逃跑: 敏捷(Agi)
-- 魔法攻击: 魔力(Mag) + 精神(MP总量相关)
+**Đối chiếu thuộc tính**:
+- Tấn công cận chiến: Sức mạnh(Str) + Khéo léo(Dex)/2
+- Tầm xa/Kỹ thuật: Khéo léo(Dex) + May mắn
+- Phòng thủ/Sức bền: Độ bền(End) + Ý chí
+- Né tránh/Chạy trốn: Nhanh nhẹn(Agi)
+- Tấn công phép thuật: Ma lực(Mag) + Tinh thần(Liên quan tổng MP)
 
-### B. 难度阈值 (Difficulty)
-- 同级战斗:
-  - 简单(杂兵): 判定值需 > 属性平均值 - 100
-  - 普通(精英): 判定值需 > 属性平均值
-  - 困难(楼层主): 判定值需 > 属性平均值 + 200
-- 跨级挑战:
-  - 高1级: 同级阈值基础上 +500
-  - 高2级: 同级阈值基础上 +1000
+### B. Ngưỡng độ khó (Difficulty)
+- Chiến đấu đồng cấp:
+  - Đơn giản (Lính lác): Giá trị check cần > Trung bình thuộc tính - 100
+  - Bình thường (Tinh anh): Giá trị check cần > Trung bình thuộc tính
+  - Khó (Chủ tầng): Giá trị check cần > Trung bình thuộc tính + 200
+- Thử thách vượt cấp:
+  - Cao hơn 1 cấp: Ngưỡng đồng cấp +500
+  - Cao hơn 2 cấp: Ngưỡng đồng cấp +1000
 
-### C. 非战斗行动 DC 指南 (示例)
-- 简单: 100~140（普通交涉/简单攀爬）
-- 中等: 140~190（复杂交涉/危险攀爬）
-- 困难: 190~250（精密锁匠/高速闪避）
-- 极难: 250+（短时间内高精度操作）
+### C. Hướng dẫn DC hành động phi chiến đấu (Ví dụ)
+- Đơn giản: 100~140 (Giao thiệp thường/Leo trèo đơn giản)
+- Trung bình: 140~190 (Giao thiệp phức tạp/Leo trèo nguy hiểm)
+- Khó: 190~250 (Phá khóa tinh vi/Né tránh tốc độ cao)
+- Cực khó: 250+ (Thao tác chính xác cao trong thời gian ngắn)
 
-### D. 修正值 (Modifiers)
-- **环境**:
-  - 主场/熟悉地形: +30
-  - 黑暗/狭窄/恶劣: -30 ~ -50
-  - 队友支援: +20 ~ +50
-- **装备**:
-  - 装备压制/克制: +10 ~ +40
-  - 装备破损/耐久不足: -10 ~ -30
-- **状态**:
-  - 受伤 (HP < 50%): -20
-  - 濒死 (HP < 20%): -50
-  - 体力不足 (体力 < 30%): -20
-  - 高疲劳 (疲劳度 > 70%): -20
-  - 饥饿/干渴: -20 ~ -30
-  - 体力与疲劳惩罚不叠加，取更高者
+### D. Giá trị sửa đổi (Modifiers)
+- **Môi trường**:
+  - Sân nhà/Địa hình quen thuộc: +30
+  - Tối tăm/Chật hẹp/Khắc nghiệt: -30 ~ -50
+  - Đồng đội hỗ trợ: +20 ~ +50
+- **Trang bị**:
+  - Trang bị áp chế/Khắc chế: +10 ~ +40
+  - Trang bị hỏng/Độ bền không đủ: -10 ~ -30
+- **Trạng thái**:
+  - Bị thương (HP < 50%): -20
+  - Hấp hối (HP < 20%): -50
+  - Thể lực không đủ (Thể lực < 30%): -20
+  - Mệt mỏi cao (Độ mệt mỏi > 70%): -20
+  - Đói/Khát: -20 ~ -30
+  - Hình phạt thể lực và mệt mỏi không cộng dồn, lấy cái cao hơn
 
 ---
 
-## 2. 结果判定表 (Result Table)
-| 差值 (判定值 - 难度) | 结果 | 后果 |
+## 2. Bảng phán quyết kết quả (Result Table)
+| Chênh lệch (Giá trị check - Độ khó) | Kết quả | Hậu quả |
 |-------------------|------|------|
-| < -200            | 大失败 | 重创 / 装备破损 / 资源损失 |
-| < 0               | 失败 | 受伤 / 行动失败 |
-| ≥ 0               | 成功 | 造成有效伤害 |
-| ≥ 150             | 大成功 | 暴击 / 部位破坏 |
-| ≥ 300             | 完美 | 秒杀 / 英雄一击 |
+| < -200            | Đại thất bại | Trọng thương / Trang bị hỏng / Mất tài nguyên |
+| < 0               | Thất bại | Bị thương / Hành động thất bại |
+| ≥ 0               | Thành công | Gây sát thương hiệu quả |
+| ≥ 150             | Đại thành công | Chí mạng / Phá hủy bộ phận |
+| ≥ 300             | Hoàn hảo | Một kích tất sát / Đòn đánh anh hùng |
 
 ---
 
-## 3. 流程与规则
-1. 确定行动类型与核心属性。
-2. 计算基础值与等级补正。
-3. 按敌方强度或 DC 选择难度阈值。
-4. 叠加环境/装备/状态修正。
-5. 给出判定结果并写入判定行。
+## 3. Quy trình và Quy tắc
+1. Xác định loại hành động và thuộc tính cốt lõi.
+2. Tính giá trị cơ bản và thưởng cấp độ.
+3. Chọn ngưỡng độ khó theo cường độ địch hoặc DC.
+4. Cộng dồn sửa đổi môi trường/trang bị/trạng thái.
+5. Đưa ra kết quả phán quyết và ghi vào dòng phán quyết.
 
-## 4. 场景示例
-- 例1（战斗）: 基础 170 + 装备 +15 + 环境 -10 = 175，对比精英阈值 160，成功。
-- 例2（交涉）: 基础 120 + 幸运 +10 + 状态 -20 = 110，对比 DC 140，失败。
+## 4. Ví dụ bối cảnh
+- Ví dụ 1 (Chiến đấu): Cơ bản 170 + Trang bị +15 + Môi trường -10 = 175, so với ngưỡng Tinh anh 160, Thành công.
+- Ví dụ 2 (Giao thiệp): Cơ bản 120 + May mắn +10 + Trạng thái -20 = 110, so với DC 140, Thất bại.
 
-## 5. 普通规则（强制）
-- 失败必须带来真实代价。
-- 等级差距依然绝对。
-</判定系统-普通>`;
+## 5. Quy tắc Bình thường (Bắt buộc)
+- Thất bại bắt buộc phải mang lại cái giá thực tế.
+- Chênh lệch cấp độ vẫn là tuyệt đối.
+</Hệ thống phán quyết-Bình thường>`;
 
-export const P_JUDGMENT_HARD = `<判定系统-困难>
-【判定系统：困难 (Hard)】
-此模式强调严苛判定与高失败成本。
+export const P_JUDGMENT_HARD = `<Hệ thống phán quyết-Khó>
+【Hệ thống phán quyết: Khó (Hard)】
+Chế độ này nhấn mạnh phán quyết khắc nghiệt và chi phí thất bại cao.
 
-## 判定输出要求
-**必须使用结构化 logs 对象输出判定**，格式如下：
+## Yêu cầu đầu ra phán quyết
+**Bắt buộc sử dụng đối tượng logs có cấu trúc để xuất phán quyết**, định dạng như sau:
 \`\`\`json
 {
-  "sender": "【判定】",
-  "text": "行动名称｜结果｜判定值 158/难度 120｜基础 130 (Lv.补正)｜环境 +18 (地形/视野)｜状态 -0 (体能/伤势)｜幸运 +10"
+  "sender": "【Phán quyết】",
+  "text": "Tên hành động｜Kết quả｜Giá trị check 158/Độ khó 120｜Cơ bản 130 (Lv.Bonus)｜Môi trường +18 (Địa hình/Tầm nhìn)｜Trạng thái -0 (Thể năng/Thương tích)｜May mắn +10"
 }
 \`\`\`
-- 字段顺序固定：行动名称 → 结果 → 判定值/难度 → 基础 → 环境 → 状态 → 幸运（有装备修正时可在末尾追加“｜装备 +Q (说明)”）。
-- 结果仅允许：成功 / 失败 / 大成功 / 大失败。
-- NSFW 场景下仍必须执行内部判定，但默认不在 logs 输出常规“【判定】”行。
-- 仅当出现不可抵御/强制失控/榨干/魅惑沦陷等高风险结果时，允许输出 '"sender":"【NSFW判定】"' 的专用判定行，用于前端弹窗展示。
+- Thứ tự trường cố định: Tên hành động → Kết quả → Giá trị check/Độ khó → Cơ bản → Môi trường → Trạng thái → May mắn (Có thể thêm "｜Trang bị +Q (Giải thích)" vào cuối nếu có sửa đổi từ trang bị).
+- Kết quả chỉ cho phép: Thành công / Thất bại / Đại thành công / Đại thất bại.
+- Trong bối cảnh NSFW vẫn bắt buộc thực hiện phán quyết nội bộ, nhưng mặc định không xuất dòng "【Phán quyết】" thông thường vào logs.
+- Chỉ khi xuất hiện kết quả rủi ro cao như không thể chống cự/cưỡng chế mất kiểm soát/vắt kiệt/mê hoặc sa ngã, mới cho phép xuất dòng phán quyết chuyên dụng '"sender":"【Phán quyết NSFW】"' để hiển thị popup frontend.
 
 ---
 
-## 1. 核心公式 (Formula)
+## 1. Công thức cốt lõi (Formula)
 \`\`\`
-最终判定值 = (基础能力 + 等级隐形补正) + 幸运 + 环境修正 + 状态修正 + 装备修正
+Giá trị phán quyết cuối = (Năng lực cơ bản + Ẩn số cấp độ) + May mắn + Sửa đổi môi trường + Sửa đổi trạng thái + Sửa đổi trang bị
 \`\`\`
 
-### A. 基础值 (Base)
-基础 = 核心属性值(0-999) + (等级 Level × 100)
-**等级补正 (Level Bonus)**:
+### A. Giá trị cơ bản (Base)
+Cơ bản = Chỉ số thuộc tính cốt lõi(0-999) + (Cấp độ Level × 100)
+**Thưởng cấp độ (Level Bonus)**:
 - Lv.1: +0
 - Lv.2: +300
 - Lv.3: +600
 - Lv.4: +1000
 
-**属性对照**:
-- 近战攻击: 力量(Str) + 灵巧(Dex)/2
-- 远程/技巧: 灵巧(Dex) + 运气
-- 防御/耐力: 耐久(End) + 意志
-- 闪避/逃跑: 敏捷(Agi)
-- 魔法攻击: 魔力(Mag) + 精神(MP总量相关)
+**Đối chiếu thuộc tính**:
+- Tấn công cận chiến: Sức mạnh(Str) + Khéo léo(Dex)/2
+- Tầm xa/Kỹ thuật: Khéo léo(Dex) + May mắn
+- Phòng thủ/Sức bền: Độ bền(End) + Ý chí
+- Né tránh/Chạy trốn: Nhanh nhẹn(Agi)
+- Tấn công phép thuật: Ma lực(Mag) + Tinh thần(Liên quan tổng MP)
 
-### B. 难度阈值 (Difficulty)
-- 同级战斗:
-  - 简单(杂兵): 判定值需 > 属性平均值 - 100
-  - 普通(精英): 判定值需 > 属性平均值
-  - 困难(楼层主): 判定值需 > 属性平均值 + 200
-- 跨级挑战:
-  - 高1级: 同级阈值基础上 +700
-  - 高2级: 同级阈值基础上 +1300
+### B. Ngưỡng độ khó (Difficulty)
+- Chiến đấu đồng cấp:
+  - Đơn giản (Lính lác): Giá trị check cần > Trung bình thuộc tính - 100
+  - Bình thường (Tinh anh): Giá trị check cần > Trung bình thuộc tính
+  - Khó (Chủ tầng): Giá trị check cần > Trung bình thuộc tính + 200
+- Thử thách vượt cấp:
+  - Cao hơn 1 cấp: Ngưỡng đồng cấp +700
+  - Cao hơn 2 cấp: Ngưỡng đồng cấp +1300
 
-### C. 非战斗行动 DC 指南 (示例)
-- 简单: 120~160
-- 中等: 160~220
-- 困难: 220~280
-- 极难: 280+
+### C. Hướng dẫn DC hành động phi chiến đấu (Ví dụ)
+- Đơn giản: 120~160
+- Trung bình: 160~220
+- Khó: 220~280
+- Cực khó: 280+
 
-### D. 修正值 (Modifiers)
-- **环境**:
-  - 主场/熟悉地形: +30
-  - 黑暗/狭窄/恶劣: -40 ~ -70
-  - 队友支援: +20 ~ +40
-- **装备**:
-  - 装备压制/克制: +10 ~ +30
-  - 装备破损/耐久不足: -20 ~ -40
-- **状态**:
-  - 受伤 (HP < 50%): -25
-  - 濒死 (HP < 20%): -60
-  - 体力不足 (体力 < 30%): -25
-  - 高疲劳 (疲劳度 > 70%): -25
-  - 饥饿/干渴: -30 ~ -40
-  - 体力与疲劳惩罚不叠加，取更高者
+### D. Giá trị sửa đổi (Modifiers)
+- **Môi trường**:
+  - Sân nhà/Địa hình quen thuộc: +30
+  - Tối tăm/Chật hẹp/Khắc nghiệt: -40 ~ -70
+  - Đồng đội hỗ trợ: +20 ~ +40
+- **Trang bị**:
+  - Trang bị áp chế/Khắc chế: +10 ~ +30
+  - Trang bị hỏng/Độ bền không đủ: -20 ~ -40
+- **Trạng thái**:
+  - Bị thương (HP < 50%): -25
+  - Hấp hối (HP < 20%): -60
+  - Thể lực không đủ (Thể lực < 30%): -25
+  - Mệt mỏi cao (Độ mệt mỏi > 70%): -25
+  - Đói/Khát: -30 ~ -40
+  - Hình phạt thể lực và mệt mỏi không cộng dồn, lấy cái cao hơn
 
 ---
 
-## 2. 结果判定表 (Result Table)
-| 差值 (判定值 - 难度) | 结果 | 后果 |
+## 2. Bảng phán quyết kết quả (Result Table)
+| Chênh lệch (Giá trị check - Độ khó) | Kết quả | Hậu quả |
 |-------------------|------|------|
-| < -200            | 大失败 | 重大伤残 / 装备破碎 |
-| < 0               | 失败 | 重伤 / 被迫撤退 |
-| ≥ 0               | 成功 | 造成有效伤害 |
-| ≥ 150             | 大成功 | 暴击 / 部位破坏 |
-| ≥ 300             | 完美 | 秒杀 / 英雄一击 |
+| < -200            | Đại thất bại | Thương tật lớn / Trang bị vỡ nát |
+| < 0               | Thất bại | Trọng thương / Buộc phải rút lui |
+| ≥ 0               | Thành công | Gây sát thương hiệu quả |
+| ≥ 150             | Đại thành công | Chí mạng / Phá hủy bộ phận |
+| ≥ 300             | Hoàn hảo | Một kích tất sát / Đòn đánh anh hùng |
 
 ---
 
-## 3. 流程与规则
-1. 确定行动类型与核心属性。
-2. 计算基础值与等级补正。
-3. 按敌方强度或 DC 选择难度阈值。
-4. 叠加环境/装备/状态修正。
-5. 给出判定结果并写入判定行。
+## 3. Quy trình và Quy tắc
+1. Xác định loại hành động và thuộc tính cốt lõi.
+2. Tính giá trị cơ bản và thưởng cấp độ.
+3. Chọn ngưỡng độ khó theo cường độ địch hoặc DC.
+4. Cộng dồn sửa đổi môi trường/trang bị/trạng thái.
+5. Đưa ra kết quả phán quyết và ghi vào dòng phán quyết.
 
-## 4. 场景示例
-- 例1（战斗）: 基础 190 + 环境 -30 + 装备 +10 = 170，对比精英阈值 190，失败。
-- 例2（逃跑）: 基础 160 + 状态 -25 = 135，对比 DC 200，失败。
+## 4. Ví dụ bối cảnh
+- Ví dụ 1 (Chiến đấu): Cơ bản 190 + Môi trường -30 + Trang bị +10 = 170, so với ngưỡng Tinh anh 190, Thất bại.
+- Ví dụ 2 (Chạy trốn): Cơ bản 160 + Trạng thái -25 = 135, so với DC 200, Thất bại.
 
-## 5. 困难规则（强制）
-- 失败必须带来明确且严重的代价。
-- 同级战斗也可能出现极端伤亡。
-</判定系统-困难>`;
+## 5. Quy tắc Khó (Bắt buộc)
+- Thất bại bắt buộc mang lại cái giá rõ ràng và nghiêm trọng.
+- Chiến đấu đồng cấp cũng có thể xuất hiện thương vong cực đoan.
+</Hệ thống phán quyết-Khó>`;
 
-export const P_JUDGMENT_HELL = `<判定系统-地狱>
-【判定系统：地狱 (Hell)】
-此模式为最残酷判定，强调死亡与绝对代价。
+export const P_JUDGMENT_HELL = `<Hệ thống phán quyết-Địa ngục>
+【Hệ thống phán quyết: Địa ngục (Hell)】
+Chế độ này là phán quyết tàn khốc nhất, nhấn mạnh cái chết và cái giá tuyệt đối.
 
-## 判定输出要求
-**必须使用结构化 logs 对象输出判定**，格式如下：
+## Yêu cầu đầu ra phán quyết
+**Bắt buộc sử dụng đối tượng logs có cấu trúc để xuất phán quyết**, định dạng như sau:
 \`\`\`json
 {
-  "sender": "【判定】",
-  "text": "行动名称｜结果｜判定值 158/难度 120｜基础 130 (Lv.补正)｜环境 +18 (地形/视野)｜状态 -0 (体能/伤势)｜幸运 +10"
+  "sender": "【Phán quyết】",
+  "text": "Tên hành động｜Kết quả｜Giá trị check 158/Độ khó 120｜Cơ bản 130 (Lv.Bonus)｜Môi trường +18 (Địa hình/Tầm nhìn)｜Trạng thái -0 (Thể năng/Thương tích)｜May mắn +10"
 }
 \`\`\`
-- 字段顺序固定：行动名称 → 结果 → 判定值/难度 → 基础 → 环境 → 状态 → 幸运（有装备修正时可在末尾追加“｜装备 +Q (说明)”）。
-- 结果仅允许：成功 / 失败 / 大成功 / 大失败。
-- NSFW 场景下仍必须执行内部判定，但默认不在 logs 输出常规“【判定】”行。
-- 仅当出现不可抵御/强制失控/榨干/魅惑沦陷等高风险结果时，允许输出 '"sender":"【NSFW判定】"' 的专用判定行，用于前端弹窗展示。
+- Thứ tự trường cố định: Tên hành động → Kết quả → Giá trị check/Độ khó → Cơ bản → Môi trường → Trạng thái → May mắn (Có thể thêm "｜Trang bị +Q (Giải thích)" vào cuối nếu có sửa đổi từ trang bị).
+- Kết quả chỉ cho phép: Thành công / Thất bại / Đại thành công / Đại thất bại.
+- Trong bối cảnh NSFW vẫn bắt buộc thực hiện phán quyết nội bộ, nhưng mặc định không xuất dòng "【Phán quyết】" thông thường vào logs.
+- Chỉ khi xuất hiện kết quả rủi ro cao như không thể chống cự/cưỡng chế mất kiểm soát/vắt kiệt/mê hoặc sa ngã, mới cho phép xuất dòng phán quyết chuyên dụng '"sender":"【Phán quyết NSFW】"' để hiển thị popup frontend.
 
 ---
 
-## 1. 核心公式 (Formula)
+## 1. Công thức cốt lõi (Formula)
 \`\`\`
-最终判定值 = (基础能力 + 等级隐形补正) + 幸运 + 环境修正 + 状态修正 + 装备修正
+Giá trị phán quyết cuối = (Năng lực cơ bản + Ẩn số cấp độ) + May mắn + Sửa đổi môi trường + Sửa đổi trạng thái + Sửa đổi trang bị
 \`\`\`
 
-### A. 基础值 (Base)
-基础 = 核心属性值(0-999) + (等级 Level × 100)
-**等级补正 (Level Bonus)**:
+### A. Giá trị cơ bản (Base)
+Cơ bản = Chỉ số thuộc tính cốt lõi(0-999) + (Cấp độ Level × 100)
+**Thưởng cấp độ (Level Bonus)**:
 - Lv.1: +0
 - Lv.2: +300
 - Lv.3: +600
 - Lv.4: +1000
 
-**属性对照**:
-- 近战攻击: 力量(Str) + 灵巧(Dex)/2
-- 远程/技巧: 灵巧(Dex) + 运气
-- 防御/耐力: 耐久(End) + 意志
-- 闪避/逃跑: 敏捷(Agi)
-- 魔法攻击: 魔力(Mag) + 精神(MP总量相关)
+**Đối chiếu thuộc tính**:
+- Tấn công cận chiến: Sức mạnh(Str) + Khéo léo(Dex)/2
+- Tầm xa/Kỹ thuật: Khéo léo(Dex) + May mắn
+- Phòng thủ/Sức bền: Độ bền(End) + Ý chí
+- Né tránh/Chạy trốn: Nhanh nhẹn(Agi)
+- Tấn công phép thuật: Ma lực(Mag) + Tinh thần(Liên quan tổng MP)
 
-### B. 难度阈值 (Difficulty)
-- 同级战斗:
-  - 简单(杂兵): 判定值需 > 属性平均值 - 100
-  - 普通(精英): 判定值需 > 属性平均值
-  - 困难(楼层主): 判定值需 > 属性平均值 + 200
-- 跨级挑战:
-  - 高1级: 同级阈值基础上 +900
-  - 高2级: 同级阈值基础上 +1600
+### B. Ngưỡng độ khó (Difficulty)
+- Chiến đấu đồng cấp:
+  - Đơn giản (Lính lác): Giá trị check cần > Trung bình thuộc tính - 100
+  - Bình thường (Tinh anh): Giá trị check cần > Trung bình thuộc tính
+  - Khó (Chủ tầng): Giá trị check cần > Trung bình thuộc tính + 200
+- Thử thách vượt cấp:
+  - Cao hơn 1 cấp: Ngưỡng đồng cấp +900
+  - Cao hơn 2 cấp: Ngưỡng đồng cấp +1600
 
-### C. 非战斗行动 DC 指南 (示例)
-- 简单: 140~200
-- 中等: 200~260
-- 困难: 260~330
-- 极难: 330+
+### C. Hướng dẫn DC hành động phi chiến đấu (Ví dụ)
+- Đơn giản: 140~200
+- Trung bình: 200~260
+- Khó: 260~330
+- Cực khó: 330+
 
-### D. 修正值 (Modifiers)
-- **环境**:
-  - 主场/熟悉地形: +20
-  - 黑暗/狭窄/恶劣: -50 ~ -90
-  - 队友支援: +10 ~ +30
-- **装备**:
-  - 装备压制/克制: +10 ~ +20
-  - 装备破损/耐久不足: -30 ~ -60
-- **状态**:
-  - 受伤 (HP < 50%): -30
-  - 濒死 (HP < 20%): -80
-  - 体力不足 (体力 < 30%): -30
-  - 高疲劳 (疲劳度 > 70%): -30
-  - 饥饿/干渴: -40 ~ -60
-  - 体力与疲劳惩罚不叠加，取更高者
+### D. Giá trị sửa đổi (Modifiers)
+- **Môi trường**:
+  - Sân nhà/Địa hình quen thuộc: +20
+  - Tối tăm/Chật hẹp/Khắc nghiệt: -50 ~ -90
+  - Đồng đội hỗ trợ: +10 ~ +30
+- **Trang bị**:
+  - Trang bị áp chế/Khắc chế: +10 ~ +20
+  - Trang bị hỏng/Độ bền không đủ: -30 ~ -60
+- **Trạng thái**:
+  - Bị thương (HP < 50%): -30
+  - Hấp hối (HP < 20%): -80
+  - Thể lực không đủ (Thể lực < 30%): -30
+  - Mệt mỏi cao (Độ mệt mỏi > 70%): -30
+  - Đói/Khát: -40 ~ -60
+  - Hình phạt thể lực và mệt mỏi không cộng dồn, lấy cái cao hơn
 
 ---
 
-## 2. 结果判定表 (Result Table)
-| 差值 (判定值 - 难度) | 结果 | 后果 |
+## 2. Bảng phán quyết kết quả (Result Table)
+| Chênh lệch (Giá trị check - Độ khó) | Kết quả | Hậu quả |
 |-------------------|------|------|
-| < -200            | 大失败 | 致命重创 / 装备粉碎 |
-| < 0               | 失败 | 重伤或濒死 |
-| ≥ 0               | 成功 | 造成有效伤害 |
-| ≥ 150             | 大成功 | 暴击 / 部位破坏 |
-| ≥ 300             | 完美 | 秒杀 / 英雄一击 |
+| < -200            | Đại thất bại | Trọng thương chí mạng / Trang bị nát vụn |
+| < 0               | Thất bại | Trọng thương hoặc hấp hối |
+| ≥ 0               | Thành công | Gây sát thương hiệu quả |
+| ≥ 150             | Đại thành công | Chí mạng / Phá hủy bộ phận |
+| ≥ 300             | Hoàn hảo | Một kích tất sát / Đòn đánh anh hùng |
 
 ---
 
-## 3. 流程与规则
-1. 确定行动类型与核心属性。
-2. 计算基础值与等级补正。
-3. 按敌方强度或 DC 选择难度阈值。
-4. 叠加环境/装备/状态修正。
-5. 给出判定结果并写入判定行。
+## 3. Quy trình và Quy tắc
+1. Xác định loại hành động và thuộc tính cốt lõi.
+2. Tính giá trị cơ bản và thưởng cấp độ.
+3. Chọn ngưỡng độ khó theo cường độ địch hoặc DC.
+4. Cộng dồn sửa đổi môi trường/trang bị/trạng thái.
+5. Đưa ra kết quả phán quyết và ghi vào dòng phán quyết.
 
-## 4. 场景示例
-- 例1（战斗）: 基础 200 + 环境 -50 + 装备 +10 = 160，对比精英阈值 220，失败。
-- 例2（施法）: 基础 180 + 状态 -40 = 140，对比 DC 260，失败。
+## 4. Ví dụ bối cảnh
+- Ví dụ 1 (Chiến đấu): Cơ bản 200 + Môi trường -50 + Trang bị +10 = 160, so với ngưỡng Tinh anh 220, Thất bại.
+- Ví dụ 2 (Thi triển phép): Cơ bản 180 + Trạng thái -40 = 140, so với DC 260, Thất bại.
 
-## 5. 地狱铁律（强制）
-- 等级差距绝对：差 1 级是苦战，差 2 级是屠杀。
-- 无剧情保底，失败即真实代价。
-- 头部/胸部重创可直接死亡。
-</判定系统-地狱>`;
+## 5. Luật thép Địa ngục (Bắt buộc)
+- Chênh lệch cấp độ là tuyệt đối: Kém 1 cấp là khổ chiến, kém 2 cấp là tàn sát.
+- Không có bảo hộ cốt truyện, thất bại tức là cái giá thực tế.
+- Trọng thương Đầu/Ngực có thể dẫn đến tử vong ngay lập tức.
+</Hệ thống phán quyết-Địa ngục>`;
