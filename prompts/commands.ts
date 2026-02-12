@@ -1,57 +1,55 @@
-﻿export const P_SYS_COMMANDS = `<指令场景与示例>
-# 【指令场景与示例】
+export const P_SYS_COMMANDS = `<Bối cảnh & Ví dụ lệnh>
+# 【Bối cảnh & Ví dụ lệnh】
 
-[必须生成指令的场景]
-□ 时间/日期/位置变化 → set gameState.游戏时间 / set gameState.当前日期 / set gameState.当前地点
-□ 物品获得(明确拾取/收到/放入背包) → push gameState.背包 (必须生成完整InventoryItem结构, id需唯一)
-□ 掉落但未拾取 → 仅叙事描述，不生成指令
-□ 物品消耗 → add gameState.背包[i].数量 -1 (若数量归0，则 delete gameState.背包[i])
-□ 战斗伤害 → add gameState.角色.生命值 -X / add gameState.角色.身体部位.胸部.当前 -X
-□ 属性变化 → add gameState.角色.能力值.力量 1 (仅限恩惠更新时)
-□ 社交变化 → add gameState.社交[i].好感度 X / push gameState.社交 (新NPC) / set gameState.社交[i].是否在场 true
-□ NPC互动记忆 → 只要与NPC发生对话/交易/战斗/短信/委托/问候，必须 push gameState.社交[i].记忆 (确保末条为本次互动)
-□ 任务更新 → set gameState.任务[i].状态 "completed"
+[Bối cảnh BẮT BUỘC tạo lệnh]
+□ Thay đổi Thời gian/Ngày/Địa điểm → set gameState.游戏时间 (Giờ game) / set gameState.当前日期 (Ngày hiện tại) / set gameState.当前地点 (Địa điểm hiện tại)
+□ Nhận vật phẩm (Nhặt/Được tặng/Bỏ vào túi) → push gameState.背包 (Bắt buộc tạo cấu trúc InventoryItem hoàn chỉnh, id phải duy nhất)
+□ Vật phẩm rơi nhưng CHƯA nhặt → Chỉ mô tả trong văn bản, KHÔNG tạo lệnh.
+□ Tiêu hao vật phẩm → add gameState.背包[i].数量 -1 (Nếu số lượng về 0, thì delete gameState.背包[i])
+□ Sát thương chiến đấu → add gameState.角色.生命值 -X / add gameState.角色.身体部位.胸部.当前 -X
+□ Thay đổi chỉ số → add gameState.角色.能力值.力量 1 (Chỉ khi cập nhật Falna/Ân huệ)
+□ Thay đổi xã hội → add gameState.社交[i].好感度 X / push gameState.社交 (NPC mới) / set gameState.社交[i].是否在场 true
+□ Ký ức tương tác NPC → Hễ có Đối thoại/Giao dịch/Chiến đấu/Tin nhắn/Ủy thác/Chào hỏi với NPC, bắt buộc push gameState.社交[i].记忆 (Đảm bảo dòng cuối là tương tác lần này)
+□ Cập nhật nhiệm vụ → set gameState.任务[i].状态 "completed"
 
-[前置依赖检查（先有后改）]
-□ 给 NPC 加记忆/改好感前 → 先确认该 NPC 已存在于 gameState.社交；不存在则先 push 新 NPC，再执行记忆/好感指令
-□ 社交索引解析（CRITICAL）→ 先从 [社交与NPC状态] 中的 \`索引/姓名/id\` 建立映射，再写 \`gameState.社交[i].*\`；禁止按正文出场顺序或角色名臆测 i
-□ 修改背包[i].数量前 → 先确认该物品已存在；不存在先 push 完整物品，再 add/set 数量
-□ 修改任务[i]/契约[i]/战斗.敌方[i] 前 → 先确认索引存在；不存在先创建条目，禁止直接操作空索引
-□ 同回合命令顺序固定：创建命令在前，修改命令在后（创建 → 修改）
+[Kiểm tra điều kiện tiên quyết (Có trước sửa sau)]
+□ Trước khi thêm Ký ức/Sửa hảo cảm NPC → Xác nhận NPC đã tồn tại trong gameState.社交; nếu chưa, phải push NPC mới trước, rồi mới thực hiện lệnh nhớ/hảo cảm.
+□ Phân giải Index Xã hội (CRITICAL) → Trước tiên lập ánh xạ từ \`Index/Tên/ID\` trong [Trạng thái Xã hội & NPC], sau đó mới viết \`gameState.社交[i].*\`; CẤM đoán mò index i dựa theo thứ tự xuất hiện trong văn bản.
+□ Trước khi sửa gameState.背包[i].数量 → Xác nhận vật phẩm đã có; nếu chưa, push vật phẩm hoàn chỉnh trước, sau đó mới add/set số lượng.
+□ Trước khi sửa Nhiệm vụ[i]/Khế ước[i]/Chiến đấu.Địch[i] → Xác nhận index tồn tại; nếu chưa, phải tạo mục mới trước, cấm thao tác trực tiếp lên index rỗng.
+□ Thứ tự lệnh trong cùng lượt: Lệnh TẠO trước, lệnh SỬA sau (Create → Update).
 
-[指令操作示例库]
+[Thư viện ví dụ thao tác lệnh]
 
-**A. 物品指令示例**
-- **获得物品 (完整结构)**:
-  \`{"action":"push", "key":"gameState.背包", "value":{"id":"Itm_gen_01", "名称":"双角兽的角", "描述":"坚硬的素材。", "数量":1, "类型":"material", "品质":"Common", "价值":500}}\`
-- **消耗物品 (指定索引)**:
+**A. Ví dụ lệnh Vật phẩm**
+- **Nhận vật phẩm (Cấu trúc hoàn chỉnh)**:
+  \`{"action":"push", "key":"gameState.背包", "value":{"id":"Itm_gen_01", "名称":"Sừng Bicorn", "描述":"Vật liệu cứng.", "数量":1, "类型":"material", "品质":"Common", "价值":500}}\`
+- **Tiêu hao vật phẩm (Chỉ định Index)**:
   \`{"action":"add", "key":"gameState.背包[2].数量", "value":-1}\`
-- **金钱变化**:
+- **Thay đổi tiền tệ**:
   \`{"action":"add", "key":"gameState.角色.法利", "value":-1200}\`
 
-**B. 恩惠/能力值指令示例**
-- **能力值更新**:
+**B. Ví dụ lệnh Falna/Chỉ số năng lực**
+- **Cập nhật chỉ số**:
   \`{"action":"add", "key":"gameState.角色.能力值.力量", "value": 5}\`
-- **习得技能**:
-  \`{"action":"push", "key":"gameState.角色.技能", "value":{"id":"Skl_Argonaut", "名称":"英雄愿望(Argonaut)", "类别":"主动", "描述":"对主动行动进行蓄力...", "效果":"蓄力完成后获得高倍率爆发", "触发":"主动蓄力", "持续":"短", "冷却":"中", "消耗":{"体力":"中","精神":"低"}, "标签":["蓄力"], "稀有":true}}\`
-- **习得魔法**:
-  \`{"action":"push", "key":"gameState.角色.魔法", "value":{"id":"Mag_Firebolt", "名称":"Firebolt", "咏唱":"炎之精灵，化为炽矢。", "类别":"攻击", "属性":"火", "描述":"快速咏唱的火系弹道魔法", "效果":"单体火焰冲击", "射程":"中", "范围":"单体", "消耗":{"精神":30}}}\`
+- **Học kỹ năng (Skill)**:
+  \`{"action":"push", "key":"gameState.角色.技能", "value":{"id":"Skl_Argonaut", "名称":"Argonaut (Anh Hùng Nguyện Vọng)", "类别":"Chủ động", "描述":"Tụ lực cho hành động chủ động...", "效果":"Sau khi tụ lực hoàn tất nhận sát thương bùng nổ cực lớn", "触发":"Tụ lực chủ động", "持续":"Ngắn", "冷却":"Trung bình", "消耗":{"体力":"Trung bình","精神":"Thấp"}, "标签":["Tụ lực"], "稀有":true}}\`
+- **Học ma pháp (Magic)**:
+  \`{"action":"push", "key":"gameState.角色.魔法", "value":{"id":"Mag_Firebolt", "名称":"Firebolt", "咏唱":"Hỡi tinh linh lửa, hãy hóa thành mũi tên rực cháy.", "类别":"Tấn công", "属性":"Lửa", "描述":"Ma pháp đạn đạo hệ lửa niệm chú cực nhanh", "效果":"Sát thương lửa đơn mục tiêu", "射程":"Trung bình", "范围":"Đơn thể", "消耗":{"精神":30}}}\`
 
-**C. NPC指令示例**
-- **档案填写要求**: 档案需包含「身份定位/外貌要点/性格特征/背景经历/与玩家关系或当前状态」。特别关注必须具体完整；普通关系可简述但需覆盖至少身份+性格+现状。
-- **创建NPC (普通关系，仅档案)**:
-  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_Ryu", "姓名":"琉·利昂", "种族":"精灵", "年龄":21, "身份":"酒馆店员", "眷族":"阿斯特莉亚(前)", "等级":4, "好感度":20, "关系状态":"认识", "是否在场":true, "特别关注":false, "记忆":[], "档案":"冷静的酒馆店员，正在吧台值班。"}}\`
-- **创建NPC (特别关注，补全档案)**:
-  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_Syr", "姓名":"希儿", "种族":"人类", "年龄":18, "身份":"酒馆店员", "眷族":"芙蕾雅", "等级":2, "好感度":10, "关系状态":"认识", "是否在场":true, "特别关注":true, "记忆":[], "档案":"活泼亲切的酒馆少女，栗色短发，笑容明亮，性格热情敏锐，出身不详，在酒馆工作且熟悉冒险者圈子。"}}\`
-- **好感变化**:
+**C. Ví dụ lệnh NPC**
+- **Yêu cầu điền hồ sơ**: Hồ sơ cần bao gồm「Định vị thân phận/Đặc điểm ngoại hình/Đặc trưng tính cách/Trải nghiệm quá khứ/Quan hệ với người chơi hoặc trạng thái hiện tại」. NPC "Quan tâm đặc biệt" phải cụ thể và đầy đủ; Quan hệ bình thường có thể tóm tắt nhưng cần bao gồm ít nhất Thân phận + Tính cách + Hiện trạng.
+- **Tạo NPC (Quan hệ thường, chỉ hồ sơ)**:
+  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_Ryu", "姓名":"Ryuu Lion", "种族":"Elf", "年龄":21, "身份":"Nhân viên quán rượu", "眷族":"Astraea (Cũ)", "等级":4, "好感度":20, "关系状态":"Quen biết", "是否在场":true, "特别关注":false, "记忆":[], "档案":"Nhân viên quán rượu điềm tĩnh, đang trực tại quầy bar."}}\`
+- **Tạo NPC (Quan tâm đặc biệt, bổ sung hồ sơ)**:
+  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_Syr", "姓名":"Syr", "种族":"Human", "年龄":18, "身份":"Nhân viên quán rượu", "眷族":"Freya", "等级":2, "好感度":10, "关系状态":"Quen biết", "是否在场":true, "特别关注":true, "记忆":[], "档案":"Thiếu nữ quán rượu hoạt bát thân thiện, tóc ngắn màu hạt dẻ, nụ cười rạng rỡ, tính cách nhiệt tình nhạy bén, xuất thân không rõ, làm việc tại quán rượu và quen thuộc với giới mạo hiểm giả."}}\`
+- **Thay đổi hảo cảm**:
   \`{"action":"add", "key":"gameState.社交[3].好感度", "value":5}\`
-- **互动记忆写入**:
-  \`{"action":"push", "key":"gameState.社交[3].记忆", "value":{"内容":"对方询问了当前委托并约定稍后回信。","时间戳":"当前时间"}}\`
-- **不存在NPC时先创建再写记忆（正确顺序）**:
-  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_New_01", "姓名":"新角色", "种族":"人类", "年龄":20, "身份":"冒险者", "眷族":"无", "等级":1, "好感度":0, "关系状态":"初识", "是否在场":true, "特别关注":false, "记忆":[], "档案":"初次在公会大厅遇见的新人冒险者。"}}\`
-  \`{"action":"push", "key":"gameState.社交[4].记忆", "value":{"内容":"与玩家完成初次交流并互通姓名。","时间戳":"当前时间"}}\`（示例中假设新索引=4）
-- **错误示例（禁止）**:
-  正文里提到“艾丝”就直接写 \`gameState.社交[7].好感度\`（未在社交映射确认索引）。
-</指令场景与示例>`;
-
-
+- **Ghi nhớ tương tác**:
+  \`{"action":"push", "key":"gameState.社交[3].记忆", "value":{"内容":"Đối phương hỏi về ủy thác hiện tại và hẹn sẽ trả lời sau.","时间戳":"Thời gian hiện tại"}}\`
+- **Khi NPC chưa tồn tại, tạo trước rồi mới ghi nhớ (Thứ tự đúng)**:
+  \`{"action":"push", "key":"gameState.社交", "value":{"id":"Char_New_01", "姓名":"Nhân vật mới", "种族":"Human", "年龄":20, "身份":"Mạo hiểm giả", "眷族":"Không", "等级":1, "好感度":0, "关系状态":"Sơ giao", "是否在场":true, "特别关注":false, "记忆":[], "档案":"Mạo hiểm giả tân thủ lần đầu gặp tại sảnh Guild."}}\`
+  \`{"action":"push", "key":"gameState.社交[4].记忆", "value":{"内容":"Hoàn thành giao tiếp lần đầu với người chơi và trao đổi tên họ.","时间戳":"Thời gian hiện tại"}}\` (Trong ví dụ giả sử index mới = 4)
+- **Ví dụ sai (CẤM)**:
+  Trong văn bản nhắc đến "Ais" liền viết ngay \`gameState.社交[7].好感度\` (Khi chưa xác nhận index trong ánh xạ xã hội).
+</Bối cảnh & Ví dụ lệnh>`;
