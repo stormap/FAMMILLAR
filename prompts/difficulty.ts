@@ -1,131 +1,130 @@
-﻿
-export const P_DIFFICULTY_EASY = `<游戏难度-轻松>
-【游戏难度：轻松 (Easy)】
-本难度强调爽快与可控体验，但仍遵守世界铁律与因果。
+export const P_DIFFICULTY_EASY = `<Độ khó-Dễ>
+【Độ khó trò chơi: Dễ (Easy)】
+Độ khó này nhấn mạnh trải nghiệm sảng khoái và dễ kiểm soát, nhưng vẫn tuân thủ các quy tắc thép và nhân quả của thế giới.
 
-1. **战斗强度**:
-   - 怪物生命值与攻击力偏低（建议 -20%~-30%）。
-   - 怪物 AI 更保守，倾向试探与撤退。
-   - 跨级战斗惩罚较低，但仍不允许无理由碾压。
+1. **Cường độ chiến đấu**:
+   - HP và Sức tấn công của quái vật khá thấp (Khuyến nghị -20%~-30%).
+   - AI quái vật bảo thủ hơn, có xu hướng thăm dò và rút lui.
+   - Hình phạt khi chiến đấu vượt cấp thấp, nhưng vẫn không cho phép áp đảo vô lý.
 
-2. **资源与经济**:
-   - 掉落率提升（建议 x2）。
-   - 经验值获取提升（建议 x1.5）。
-   - 法利与任务奖励提高（建议 +30%~+50%）。
-   - 商店更愿意打折并提供额外情报。
+2. **Tài nguyên & Kinh tế**:
+   - Tỷ lệ rơi đồ tăng (Khuyến nghị x2).
+   - Nhận điểm kinh nghiệm tăng (Khuyến nghị x1.5).
+   - Valis và phần thưởng nhiệm vụ tăng (Khuyến nghị +30%~+50%).
+   - Cửa hàng sẵn sàng giảm giá và cung cấp thêm thông tin.
 
-3. **生存压力**:
-   - 饱腹/水分消耗较慢，低阈值以提示为主。
-   - 体力恢复更快，疲劳累积更慢。
-   - 轻度负重不强制惩罚，仅影响叙事。
+3. **Áp lực sinh tồn**:
+   - Độ no/Lượng nước tiêu hao chậm, chủ yếu dùng ngưỡng thấp để nhắc nhở.
+   - Thể lực hồi phục nhanh hơn, mệt mỏi tích lũy chậm hơn.
+   - Quá tải trọng lượng nhẹ không bị phạt bắt buộc, chỉ ảnh hưởng đến tường thuật.
 
-4. **伤势与恢复**:
-   - 身体部位损伤弱化，多用于叙事；功能性惩罚大幅降低。
-   - 出血/感染概率显著降低。
-   - 非安全区允许少量自然恢复，安全区恢复更快。
+4. **Thương tích & Hồi phục**:
+   - Tổn thương bộ phận cơ thể được làm nhẹ, chủ yếu dùng cho tường thuật; hình phạt chức năng giảm đáng kể.
+   - Tỷ lệ xuất huyết/nhiễm trùng giảm rõ rệt.
+   - Khu vực không an toàn cho phép hồi phục tự nhiên lượng nhỏ, khu vực an toàn hồi phục nhanh hơn.
 
-5. **社交与世界**:
-   - NPC 更友善，更容易提供线索与帮助。
-   - 公会与眷族更愿意接纳与引导新人。
+5. **Xã hội & Thế giới**:
+   - NPC thân thiện hơn, dễ dàng cung cấp manh mối và giúp đỡ.
+   - Guild và Familia sẵn sàng tiếp nhận và hướng dẫn người mới hơn.
 
-6. **失败代价**:
-   - 失败多为轻伤、撤退或资源消耗。
-   - 仍禁止无理由“白送胜利”。
-</游戏难度-轻松>`;
+6. **Cái giá thất bại**:
+   - Thất bại thường chỉ là bị thương nhẹ, rút lui hoặc tiêu hao tài nguyên.
+   - Vẫn cấm "dâng chiến thắng tận miệng" vô lý.
+</Độ khó-Dễ>`;
 
-export const P_DIFFICULTY_NORMAL = `<游戏难度-普通>
-【游戏难度：普通 (Normal)】
-本难度执行完整世界规则，强调等价交换与真实代价。
+export const P_DIFFICULTY_NORMAL = `<Độ khó-Bình thường>
+【Độ khó trò chơi: Bình thường (Normal)】
+Độ khó này thực thi đầy đủ quy tắc thế giới, nhấn mạnh sự trao đổi ngang giá và cái giá thực tế.
 
-1. **战斗强度**:
-   - 怪物数值为标准水平，战斗结果依赖战术与状态。
-   - 怪物具备基础战术（包围、偷袭）。
-   - 跨级战斗风险显著提升。
+1. **Cường độ chiến đấu**:
+   - Chỉ số quái vật ở mức tiêu chuẩn, kết quả chiến đấu phụ thuộc vào chiến thuật và trạng thái.
+   - Quái vật có chiến thuật cơ bản (bao vây, đánh lén).
+   - Rủi ro khi chiến đấu vượt cấp tăng đáng kể.
 
-2. **资源与经济**:
-   - 标准掉落率与经验获取。
-   - 法利收益与风险成正比。
-   - 物价与补给正常，但需要规划。
+2. **Tài nguyên & Kinh tế**:
+   - Tỷ lệ rơi đồ và kinh nghiệm tiêu chuẩn.
+   - Thu nhập Valis tỷ lệ thuận với rủi ro.
+   - Vật giá và nhu yếu phẩm bình thường, nhưng cần quy hoạch.
 
-3. **生存压力**:
-   - 饱腹与水分消耗严格执行。
-   - 体力与疲劳联动生效，连续行动会显著影响表现。
-   - 负重会影响体力消耗与恢复。
+3. **Áp lực sinh tồn**:
+   - Tiêu hao Độ no và Lượng nước được thực thi nghiêm ngặt.
+   - Thể lực và Mệt mỏi có hiệu lực liên kết, hành động liên tục sẽ ảnh hưởng rõ rệt đến hiệu suất.
+   - Quá tải trọng lượng sẽ ảnh hưởng đến tiêu hao và hồi phục thể lực.
 
-4. **伤势与恢复**:
-   - 身体部位损伤产生实际后果（腿伤减速、手伤降灵巧）。
-   - 出血与感染需处理，否则会恶化。
-   - 非安全区恢复有限，安全区休整效率高。
+4. **Thương tích & Hồi phục**:
+   - Tổn thương bộ phận cơ thể gây hậu quả thực tế (chân thương giảm tốc, tay thương giảm linh hoạt).
+   - Xuất huyết và nhiễm trùng cần xử lý, nếu không sẽ chuyển biến xấu.
+   - Khu vực không an toàn hồi phục hạn chế, khu vực an toàn hiệu quả nghỉ ngơi cao.
 
-5. **社交与世界**:
-   - NPC 反应取决于好感度、利益与立场。
-   - 公会与眷族遵循规则流程，不提供额外优待。
+5. **Xã hội & Thế giới**:
+   - Phản ứng của NPC phụ thuộc vào độ hảo cảm, lợi ích và lập trường.
+   - Guild và Familia tuân thủ quy trình quy tắc, không ưu đãi thêm.
 
-6. **失败代价**:
-   - 失败必须带来真实代价（受伤、装备磨损、资源损失）。
-</游戏难度-普通>`;
+6. **Cái giá thất bại**:
+   - Thất bại phải mang lại cái giá thực tế (bị thương, mài mòn trang bị, mất tài nguyên).
+</Độ khó-Bình thường>`;
 
-export const P_DIFFICULTY_HARD = `<游戏难度-困难>
-【游戏难度：困难 (Hard)】
-本难度强调高风险、高代价与资源匮乏。
+export const P_DIFFICULTY_HARD = `<Độ khó-Khó>
+【Độ khó trò chơi: Khó (Hard)】
+Độ khó này nhấn mạnh rủi ro cao, cái giá lớn và sự khan hiếm tài nguyên.
 
-1. **战斗强度**:
-   - 怪物生命值/攻击力提高（建议 +20%~+40%）。
-   - 怪物更聪明，优先攻击受伤部位或咏唱后排。
-   - 跨级战斗极难，稍有失误即遭重创。
+1. **Cường độ chiến đấu**:
+   - HP/Sức tấn công quái vật tăng (Khuyến nghị +20%~+40%).
+   - Quái vật thông minh hơn, ưu tiên tấn công bộ phận bị thương hoặc hàng sau đang niệm chú.
+   - Chiến đấu vượt cấp cực khó, sơ sẩy một chút là trọng thương ngay.
 
-2. **资源与经济**:
-   - 掉落率降低至 70%~80%。
-   - 经验值与法利获取降低。
-   - 物价上涨，补给更稀缺。
+2. **Tài nguyên & Kinh tế**:
+   - Tỷ lệ rơi đồ giảm còn 70%~80%.
+   - Nhận điểm kinh nghiệm và Valis giảm.
+   - Vật giá tăng, nhu yếu phẩm khan hiếm hơn.
 
-3. **生存压力**:
-   - 代谢速度加快，剧烈运动额外消耗饱腹与水分。
-   - 体力恢复变慢，疲劳累积更快。
-   - 负重对体力与判定惩罚更明显。
+3. **Áp lực sinh tồn**:
+   - Tốc độ trao đổi chất tăng, vận động mạnh tiêu hao thêm Độ no và Lượng nước.
+   - Thể lực hồi phục chậm đi, mệt mỏi tích lũy nhanh hơn.
+   - Quá tải trọng lượng gây hình phạt lên thể lực và phán quyết rõ ràng hơn.
 
-4. **伤势与恢复**:
-   - 出血、感染与骨折更常见，恢复成本高。
-   - 非安全区几乎无法完全恢复。
-   - 医疗资源与治疗师稀缺且昂贵。
+4. **Thương tích & Hồi phục**:
+   - Xuất huyết, nhiễm trùng và gãy xương thường gặp hơn, chi phí hồi phục cao.
+   - Khu vực không an toàn gần như không thể hồi phục hoàn toàn.
+   - Tài nguyên y tế và trị liệu sư khan hiếm và đắt đỏ.
 
-5. **社交与世界**:
-   - NPC 更警惕、更现实，信任需要代价。
-   - 眷族与公会审查更严格。
+5. **Xã hội & Thế giới**:
+   - NPC cảnh giác hơn, thực tế hơn, niềm tin cần phải trả giá.
+   - Familia và Guild thẩm tra nghiêm ngặt hơn.
 
-6. **失败代价**:
-   - 失败必然产生中重度后果（重伤、装备破损、剧情受挫）。
-</游戏难度-困难>`;
+6. **Cái giá thất bại**:
+   - Thất bại tất yếu dẫn đến hậu quả trung-nghiêm trọng (trọng thương, hỏng trang bị, cốt truyện bị cản trở).
+</Độ khó-Khó>`;
 
-export const P_DIFFICULTY_HELL = `<游戏难度-地狱>
-【游戏难度：地狱 (HELL MODE)】
-本难度为极端现实体验，强调死亡、资源绝境与不可逆后果。
+export const P_DIFFICULTY_HELL = `<Độ khó-Địa ngục>
+【Độ khó trò chơi: Địa ngục (HELL MODE)】
+Độ khó này là trải nghiệm thực tế cực đoan, nhấn mạnh cái chết, tuyệt vọng về tài nguyên và hậu quả không thể đảo ngược.
 
-1. **战斗强度**:
-   - 怪物生命值/攻击力显著提升（建议 +50% 以上）。
-   - 怪物主动利用地形与玩家弱点。
-   - 跨级战斗几乎等同送死。
+1. **Cường độ chiến đấu**:
+   - HP/Sức tấn công quái vật tăng đáng kể (Khuyến nghị trên +50%).
+   - Quái vật chủ động lợi dụng địa hình và điểm yếu của người chơi.
+   - Chiến đấu vượt cấp gần như đồng nghĩa với đi tìm cái chết.
 
-2. **资源与经济**:
-   - 掉落率/经验/法利大幅下降（建议 x0.3~x0.5）。
-   - 物价飙升，补给极难获得。
-   - 任务奖励缩水或附带苛刻条件。
+2. **Tài nguyên & Kinh tế**:
+   - Tỷ lệ rơi đồ/Kinh nghiệm/Valis giảm mạnh (Khuyến nghị x0.3~x0.5).
+   - Vật giá tăng phi mã, nhu yếu phẩm cực khó kiếm.
+   - Phần thưởng nhiệm vụ bị cắt giảm hoặc đi kèm điều kiện hà khắc.
 
-3. **生存压力**:
-   - 饱腹与水分消耗速度翻倍。
-   - 体力恢复极慢，疲劳累积极快。
-   - 负重惩罚严重，易引发体力崩溃。
+3. **Áp lực sinh tồn**:
+   - Tốc độ tiêu hao Độ no và Lượng nước gấp đôi.
+   - Thể lực hồi phục cực chậm, mệt mỏi tích lũy cực nhanh.
+   - Hình phạt quá tải trọng lượng nghiêm trọng, dễ dẫn đến sụp đổ thể lực.
 
-4. **伤势与恢复**:
-   - 头部/胸部重创可直接死亡。
-   - 出血若不止血会迅速致命，感染会持续降低属性。
-   - 非安全区几乎无法恢复，医疗极其昂贵且稀缺。
+4. **Thương tích & Hồi phục**:
+   - Trọng thương Đầu/Ngực có thể dẫn đến tử vong ngay lập tức.
+   - Xuất huyết nếu không cầm máu sẽ nhanh chóng tử vong, nhiễm trùng liên tục làm giảm chỉ số.
+   - Khu vực không an toàn gần như không thể hồi phục, y tế cực kỳ đắt đỏ và khan hiếm.
 
-5. **社交与世界**:
-   - NPC 极度现实，低好感几乎不提供帮助。
-   - 眷族与公会不会破例，玩家必须用行动换取信任。
+5. **Xã hội & Thế giới**:
+   - NPC cực kỳ thực dụng, hảo cảm thấp gần như không giúp đỡ.
+   - Familia và Guild sẽ không phá lệ, người chơi phải dùng hành động để đổi lấy lòng tin.
 
-6. **失败代价**:
-   - 失败必须表现为真实且不可忽视的损失。
-   - 无剧情保底，不允许“奇迹翻盘”。
-</游戏难度-地狱>`;
+6. **Cái giá thất bại**:
+   - Thất bại bắt buộc biểu hiện thành tổn thất thực tế và không thể bỏ qua.
+   - Không có bảo hộ cốt truyện, không cho phép "phép màu lật kèo".
+</Độ khó-Địa ngục>`;
