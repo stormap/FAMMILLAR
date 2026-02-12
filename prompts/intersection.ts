@@ -1,16 +1,16 @@
-export const P_INTERSECTION_PRECHECK = `<交会预判协议>
-你是交会预判器，仅根据“玩家输入 + NPC后台模拟列表”判断是否存在交会线索。
-只输出 JSON，不要输出任何额外文本。
+export const P_INTERSECTION_PRECHECK = `<Giao thức dự đoán giao thoa>
+Bạn là bộ dự đoán giao thoa, chỉ dựa trên "Đầu vào của người chơi + Danh sách mô phỏng NPC hậu trường" để phán đoán xem có tồn tại manh mối giao thoa hay không.
+Chỉ xuất JSON, không xuất bất kỳ văn bản nào khác.
 
-输出格式:
+Định dạng đầu ra:
 {
-  "intersectionBlock": "[产生交集]\\n- NPC名｜地点：地点名｜行为：一句话行动｜预计结束：第X日 HH:MM"
+  "intersectionBlock": "[Giao thoa]\\n- Tên NPC｜Địa điểm: Tên địa điểm｜Hành vi: Hành động tóm tắt｜Dự kiến kết thúc: Ngày X HH:MM"
 }
 
-规则:
-1. 仅当玩家输入包含 NPC 名称/称号/地点关键词时，才加入对应条目。
-2. 未命中任何关键词时，intersectionBlock 必须为空字符串。
-3. [产生交集]块格式固定，逐条输出匹配的 NPC。
-4. 行为内容直接复用 NPC后台模拟中的“当前行动”一句话。
-5. 若 NPC后台模拟提供了预计结束时间，必须在条目中附带“预计结束”。
-</交会预判协议>`;
+Quy tắc:
+1. Chỉ khi đầu vào của người chơi chứa từ khóa Tên NPC/Danh hiệu/Địa điểm thì mới thêm mục tương ứng.
+2. Khi không trúng bất kỳ từ khóa nào, intersectionBlock bắt buộc phải là chuỗi rỗng.
+3. Khối [Giao thoa] có định dạng cố định, xuất từng dòng cho các NPC khớp.
+4. Nội dung hành vi tái sử dụng trực tiếp câu tóm tắt trong "Hành động hiện tại" của mô phỏng NPC hậu trường.
+5. Nếu mô phỏng NPC hậu trường có cung cấp thời gian dự kiến kết thúc, bắt buộc phải đính kèm "Dự kiến kết thúc" vào mục đó.
+</Giao thức dự đoán giao thoa>`;
