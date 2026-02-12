@@ -1,37 +1,37 @@
-export const P_MEM_S2M = `<记忆压缩-短转中>
-请对以下【短期记忆列表】进行压缩，转换为【中期记忆】。
+export const P_MEM_S2M = `<Nén ký ức-Ngắn sang Trung>
+Vui lòng nén 【Danh sách ký ức ngắn hạn】 dưới đây, chuyển đổi thành 【Ký ức trung hạn】.
 
-**输出格式严格要求**:
-1. **时间范围**: "第X日HH:MM-第Y日HH:MM：一句话概括这段时间的核心事件"
-2. **重要详情**:
-   - [第X日HH:MM]: 事件A|事件B|事件C
-   - [第X日HH:MM]: 事件D|事件E
-   *(仅记录涉及数值变化、人际关系进展、重大战斗结果的关键事件，忽略琐碎日常对话)*
+**Yêu cầu định dạng đầu ra nghiêm ngặt**:
+1. **Phạm vi thời gian**: "Ngày X HH:MM-Ngày Y HH:MM: Một câu tóm tắt sự kiện cốt lõi trong khoảng thời gian này"
+2. **Chi tiết quan trọng**:
+   - [Ngày X HH:MM]: Sự kiện A|Sự kiện B|Sự kiện C
+   - [Ngày X HH:MM]: Sự kiện D|Sự kiện E
+   *(Chỉ ghi lại các sự kiện then chốt liên quan đến thay đổi số liệu, tiến triển quan hệ nhân际, kết quả chiến đấu quan trọng, bỏ qua đối thoại hàng ngày vụn vặt)*
 
-**硬性要求**:
-- 仅输出纯文本，不要JSON，不要代码块。
-- 保留“第X日HH:MM-第Y日HH:MM”和“ - [第X日HH:MM]: ...|...”这种日期形式。
+**Yêu cầu cứng**:
+- Chỉ xuất văn bản thuần túy, không JSON, không khối mã.
+- Giữ nguyên định dạng ngày tháng "Ngày X HH:MM-Ngày Y HH:MM" và " - [Ngày X HH:MM]: ...|...".
 
-**输入数据说明**:
-输入的是过去 N 个回合的“短期记忆”（每回合行动摘要）。请将其整合为连贯的段落。
-</记忆压缩-短转中>`;
+**Giải thích dữ liệu đầu vào**:
+Đầu vào là "Ký ức ngắn hạn" (Tóm tắt hành động mỗi lượt) của N lượt vừa qua. Hãy tích hợp chúng thành đoạn văn liền mạch.
+</Nén ký ức-Ngắn sang Trung>`;
 
-export const P_MEM_M2L = `<记忆压缩-中转长>
-请对以下【中期记忆列表】进行深度整合，转换为【长期记忆】。
+export const P_MEM_M2L = `<Nén ký ức-Trung sang Dài>
+Vui lòng tích hợp sâu 【Danh sách ký ức trung hạn】 dưới đây, chuyển đổi thành 【Ký ức dài hạn】.
 
-**输出格式严格要求（与中期记忆一致）**:
-1. **时间范围**: "第X日HH:MM-第Y日HH:MM：一句话概括这段时间的核心事件"
-2. **重要详情**:
-   - [第X日HH:MM]: 事件A|事件B|事件C
-   - [第X日HH:MM]: 事件D|事件E
-   *(仅记录对角色成长有长期影响的关键事件，删去流水与琐碎细节)*
+**Yêu cầu định dạng đầu ra nghiêm ngặt (Giống ký ức trung hạn)**:
+1. **Phạm vi thời gian**: "Ngày X HH:MM-Ngày Y HH:MM: Một câu tóm tắt sự kiện cốt lõi trong khoảng thời gian này"
+2. **Chi tiết quan trọng**:
+   - [Ngày X HH:MM]: Sự kiện A|Sự kiện B|Sự kiện C
+   - [Ngày X HH:MM]: Sự kiện D|Sự kiện E
+   *(Chỉ ghi lại các sự kiện then chốt có ảnh hưởng lâu dài đến sự phát triển của nhân vật, lược bỏ chi tiết vụn vặt và dòng chảy sự việc)*
 
-**硬性要求**:
-- 仅输出纯文本，不要JSON，不要代码块。
-- 保留“第X日HH:MM-第Y日HH:MM”和“ - [第X日HH:MM]: ...|...”这种日期形式。
+**Yêu cầu cứng**:
+- Chỉ xuất văn bản thuần túy, không JSON, không khối mã.
+- Giữ nguyên định dạng ngày tháng "Ngày X HH:MM-Ngày Y HH:MM" và " - [Ngày X HH:MM]: ...|...".
 
-**整合目标**:
-- 去除流水账，提炼关键人生节点。
-- 归纳Boss战、升级事件、重大成就与关系变化。
-- 以“章节感”组织记忆，但只输出上述固定格式内容。
-</记忆压缩-中转长>`;
+**Mục tiêu tích hợp**:
+- Loại bỏ kiểu ghi chép nhật ký dòng chảy, cô đọng các nút thắt cuộc đời quan trọng.
+- Quy nạp các trận Boss, sự kiện thăng cấp, thành tựu lớn và thay đổi quan hệ.
+- Tổ chức ký ức theo "cảm giác chương hồi", nhưng chỉ xuất nội dung theo định dạng cố định nêu trên.
+</Nén ký ức-Trung sang Dài>`;
